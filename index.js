@@ -99,7 +99,7 @@ async function run() {
 
     app.delete("/visa/:id", async (req, res) => {
       const id = req.params.id;
-      console.log(id);
+
       const query = { _id: new ObjectId(id) };
       const result = await visaCollection.deleteOne(query);
       res.send(result);
@@ -121,7 +121,7 @@ async function run() {
 
     app.delete("/applied-visas/:id", async (req, res) => {
       const id = req.params.id;
-      console.log(id);
+
       const query = { _id: new ObjectId(id) };
       const result = await appliedVisaCollection.deleteOne(query);
       res.send(result);
