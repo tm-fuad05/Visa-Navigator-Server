@@ -28,8 +28,8 @@ async function run() {
     const database = client.db("VisaDB");
     const visaCollection = database.collection("visa");
 
-    // Visa User
-    const visaUserCollection = database.collection("visa User");
+    // Visa Apply
+    const appliedVisaCollection = database.collection("Applied Visas");
 
     // Add Visa Server
     app.post("/visa", async (req, res) => {
@@ -95,16 +95,16 @@ async function run() {
       res.send(result);
     });
 
-    // Visa User Server
-    app.post("/visa_user", async (req, res) => {
-      const visaUser = req.body;
-      console.log(visaUser);
-      const result = await visaUserCollection.insertOne(visaUser);
+    // Visa Apply Server
+    app.post("/applied-visas", async (req, res) => {
+      const appliedVisa = req.body;
+
+      const result = await appliedVisaCollection.insertOne(appliedVisa);
       res.send(result);
     });
 
-    app.get("/visa_user", async (req, res) => {
-      const cursor = visaUserCollection.find();
+    app.get("/applied-visas", async (req, res) => {
+      const cursor = appliedVisaCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     });
