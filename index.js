@@ -27,7 +27,6 @@ async function run() {
     // Add VIsa
     const database = client.db("VisaDB");
     const visaCollection = database.collection("visa");
-    console.log(visaCollection);
 
     // Visa User
     const visaUserCollection = database.collection("visa User");
@@ -48,6 +47,7 @@ async function run() {
 
     app.get("/visa/:id", async (req, res) => {
       const id = req.params.id;
+
       const query = { _id: new ObjectId(id) };
       const result = await visaCollection.findOne(query);
       res.send(result);
@@ -59,9 +59,37 @@ async function run() {
       res.send(filteredData);
     });
 
+    app.put("/visa/:id", async (req, res) => {
+      const id = req.params.id;
+      const visaInfo = req.body;
+
+      const filter = { _id: new ObjectId(id) };
+      const options = { upser: true };
+      const upadtedVisaInfo = {
+        $set: {
+          image: visaInfo.image,
+          countryName: visaInfo.countryName,
+          visaType: visaInfo.visaType,
+          processingTime: visaInfo.processingTime,
+          requiredDocuments: visaInfo.requiredDocuments,
+          description: visaInfo.description,
+          ageRestriction: visaInfo.ageRestriction,
+          fee: visaInfo.fee,
+          validity: visaInfo.validity,
+          applicationMethod: visaInfo.applicationMethod,
+        },
+      };
+      const result = await visaCollection.updateOne(
+        filter,
+        upadtedVisaInfo,
+        options
+      );
+      res.send(result);
+    });
+
     app.delete("/visa/:id", async (req, res) => {
       const id = req.params.id;
-      console.log("please delete my data", id);
+      console.log(id);
       const query = { _id: new ObjectId(id) };
       const result = await visaCollection.deleteOne(query);
       res.send(result);
