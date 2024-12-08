@@ -59,6 +59,16 @@ async function run() {
       res.send(filteredData);
     });
 
+    // Get Latest 6 Data
+    app.get("/latest-added-visas", async (req, res) => {
+      const result = await visaCollection
+        .find()
+        .sort({ _id: -1 })
+        .limit(6)
+        .toArray();
+      res.send(result);
+    });
+
     app.put("/visa/:id", async (req, res) => {
       const id = req.params.id;
       const visaInfo = req.body;
@@ -106,6 +116,14 @@ async function run() {
     app.get("/applied-visas", async (req, res) => {
       const cursor = appliedVisaCollection.find();
       const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.delete("/applied-visas/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const query = { _id: new ObjectId(id) };
+      const result = await appliedVisaCollection.deleteOne(query);
       res.send(result);
     });
 
