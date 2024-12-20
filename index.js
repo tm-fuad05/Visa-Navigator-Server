@@ -1,6 +1,8 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+var jwt = require("jsonwebtoken");
+
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const app = express();
 const port = process.env.PORT || 4000;
@@ -23,6 +25,18 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
+
+    // Auth Related APIs
+    app.post("/jwt", async (req, res) => {
+      const user = req.body;
+      const token = jwt.sign(user, process.env.JWT_SEC, { expiresIn: "1h" });
+      res
+        .cookie("token", token, {
+          httpOnly: true,
+          secure: false,
+        })
+        .send({ success: true });
+    });
 
     // Add VIsa
     const database = client.db("VisaDB");
@@ -114,7 +128,8 @@ async function run() {
     });
 
     app.get("/applied-visas", async (req, res) => {
-      const cursor = appliedVisaCollection.find();
+      const email = req.query.email;
+      const cursor = appliedVisaCollection.find({ email });
       const result = await cursor.toArray();
       res.send(result);
     });
